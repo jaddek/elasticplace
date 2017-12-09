@@ -40,7 +40,6 @@ class PlaceFactory extends ElasticPlace\Factory
 
 $collection = new ElasticPlace\Collection();
 $factory    = new PlaceFactory();
-$builder    = new ElasticPlace\Builder();
 
 $collection->addDocument($factory->makeIndexDocument(['name' => 'entity name', 'address' => 'entity address']));
 $collection->addDocument($factory->makeUpdateDocument(['name' => 'entity name', 'address' => 'entity address'], 1));
