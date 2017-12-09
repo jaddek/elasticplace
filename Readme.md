@@ -47,6 +47,7 @@ $collection->addDocument($factory->makeUpdateDocument(['name' => 'entity name', 
 $collection->addDocument($factory->makeUpsertDocument(['name' => 'entity name', 'address' => 'entity address']));
 $collection->addDocument($factory->makeDeleteDocument(1));
 
+$result = (new ElasticPlace\ClientWrapper())->bulk($collection);
 ```
 
 ### Batch 2
