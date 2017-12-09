@@ -2,30 +2,37 @@
 
 require('../vendor/autoload.php');
 
-class PlaceDocument extends \Jaddek\ElasticPlace\Document
+use Jaddek\ElasticPlace;
+
+class PlaceDocument extends ElasticPlace\Document
 {
     public $index = 'place';
     public $type = 'place';
 }
 
-
-class PlaceBuilder extends \Jaddek\ElasticPlace\Document\Builder
+class PlaceFactory extends ElasticPlace\Factory
 {
-    public function createDocument(): \Jaddek\ElasticPlace\Document
+    public function createDocument(): ElasticPlace\Document
     {
         return new PlaceDocument();
     }
 }
 
-$collection = new \Jaddek\ElasticPlace\Document\Collection\BatchCollection(new \Jaddek\ElasticPlace\Query\Builder());
+$collection = new ElasticPlace\Collection();
+$factory    = new PlaceFactory();
+$builder    = new ElasticPlace\Builder();
 
-$builder = new PlaceBuilder();
+$collection->addDocument($factory->makeIndexDocument(['name' => 'entity name', 'address' => 'entity address']));
+$collection->addDocument($factory->makeUpdateDocument(['name' => 'entity name', 'address' => 'entity address'], 1));
+$collection->addDocument($factory->makeUpsertDocument(['name' => 'entity name', 'address' => 'entity address']));
+$collection->addDocument($factory->makeDeleteDocument(1));
 
-$collection->addDocument($builder->index(['name' => 'entity name', 'address' => 'entity address']));
-$collection->addDocument($builder->update(['name' => 'entity name', 'address' => 'entity address'],1));
-$collection->addDocument($builder->upsert(['name' => 'entity name', 'address' => 'entity address']));
-$collection->addDocument($builder->delete(1));
+$document = new ElasticPlace\Document();
+$document->setBody(['name' => 'entity name', 'address' => 'entity address'])->setId(1)->setActionIndex()->setIndex('place')->setType('place');
+$collection->addDocument($document);
 
-$client = \Elasticsearch\ClientBuilder::create()->build();
+$result = (new ElasticPlace\ClientWrapper())->bulk($collection);
 
-$result = $client->bulk(['body' => $collection->getDocuments()]);
+
+
+

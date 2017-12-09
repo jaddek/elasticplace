@@ -5,7 +5,7 @@ namespace Jaddek\ElasticPlace;
 /**
  *
  */
-abstract class Document
+class Document
 {
     /**
      *
@@ -47,7 +47,7 @@ abstract class Document
     /**
      * @var
      */
-    protected $document;
+    protected $body;
 
     /**
      * @return mixed
@@ -140,19 +140,27 @@ abstract class Document
     /**
      * @return mixed
      */
-    public function getDocument()
+    public function getBody()
     {
-        return $this->document;
+        return $this->body;
     }
 
     /**
-     * @param $document
+     * @return bool
+     */
+    public function hasBody()
+    {
+        return empty($this->body) === false;
+    }
+
+    /**
+     * @param $body
      *
      * @return Document
      */
-    public function setDocument($document): self
+    public function setBody($body): self
     {
-        $this->document = $document;
+        $this->body = $body;
 
         return $this;
     }
@@ -166,11 +174,31 @@ abstract class Document
     }
 
     /**
+     * @return Document
+     */
+    public function setActionDelete(): self
+    {
+        $this->action = self::ACTION_DELETE;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isActionIndex()
     {
         return $this->action === self::ACTION_INDEX;
+    }
+
+    /**
+     * @return Document
+     */
+    public function setActionIndex(): self
+    {
+        $this->action = self::ACTION_INDEX;
+
+        return $this;
     }
 
     /**
@@ -182,10 +210,45 @@ abstract class Document
     }
 
     /**
+     * @return Document
+     */
+    public function setActionUpdate(): self
+    {
+        $this->action = self::ACTION_UPDATE;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isActionUpsert()
     {
         return $this->action === self::ACTION_UPSERT;
+    }
+
+    /**
+     * @return Document
+     */
+    public function setActionUpsert(): self
+    {
+        $this->action = self::ACTION_UPSERT;
+
+        return $this;
+    }
+
+    public function toArray($mode)
+    {
+        $array = [
+            'index' => $this->index,
+            'type'  => $this->type,
+            'body' => $this->body
+        ];
+
+        if ($this->hasId()) {
+            $array['id'] = $this->id;
+        }
+
+        return $array;
     }
 }

@@ -1,13 +1,11 @@
 <?php
 
-namespace Jaddek\ElasticPlace\Document;
-
-use Jaddek\ElasticPlace\Document;
+namespace Jaddek\ElasticPlace;
 
 /**
  *
  */
-abstract class Builder
+abstract class Factory
 {
     /**
      * @return Document
@@ -16,16 +14,16 @@ abstract class Builder
 
     /**
      * @param string     $action
-     * @param array|null $data
      * @param null       $id
+     * @param array|null $data
      *
      * @return Document
      */
-    protected function populate(string $action, $id = null, ?array $data = null )
+    public function populate(string $action, $id = null, array $data = null )
     {
         return $this->createDocument()
             ->setAction($action)
-            ->setDocument($data)
+            ->setBody($data)
             ->setId($id);
     }
 
@@ -35,7 +33,7 @@ abstract class Builder
      *
      * @return Document
      */
-    public function index(array $data, $id = null): Document
+    public function makeIndexDocument(array $data, $id = null): Document
     {
         return $this->populate(Document::ACTION_INDEX, $id, $data);
     }
@@ -46,9 +44,9 @@ abstract class Builder
      *
      * @return Document
      */
-    public function upsert(array $data, $id = null): Document
+    public function makeUpsertDocument(array $data, $id = null): Document
     {
-        return $this->populate(Document::ACTION_UPSERT, $id, array_merge($data, ['upsert' => 1]));
+        return $this->populate(Document::ACTION_UPSERT, $id, $data);
     }
 
     /**
@@ -57,7 +55,7 @@ abstract class Builder
      *
      * @return Document
      */
-    public function update(array $data, $id = null): Document
+    public function makeUpdateDocument(array $data, $id = null): Document
     {
         return $this->populate(Document::ACTION_UPDATE, $id, $data);
     }
@@ -67,7 +65,7 @@ abstract class Builder
      *
      * @return Document
      */
-    public function delete($id)
+    public function makeDeleteDocument($id)
     {
         return $this->populate(Document::ACTION_DELETE, $id);
     }
