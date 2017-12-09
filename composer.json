@@ -1,0 +1,20 @@
+{
+  "name": "tonynazarov/elastic-place",
+  "type": "library",
+  "require": {
+    "elasticsearch/elasticsearch": "~6.0",
+    "psr/log": "^1.0.1"
+  },
+  "authors": [
+    {
+      "name": "tonynazarov",
+      "email": "jaddek@gmail.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "Jaddek\\ElasticPlace\\": "src/"
+    }
+  }
+}
